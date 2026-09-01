@@ -1,6 +1,8 @@
-streamlit
+flask
+flask-cors
+numpy
+pandas
+pillow
 tensorflow-cpu==2.15.0
 tf-keras==2.15.0
-pillow
-pandas
-numpy==1.26.4
+gunicorn
