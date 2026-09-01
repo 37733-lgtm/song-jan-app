@@ -152,9 +152,10 @@ def predict_food(image):
     data[0] = normalized_image_array
 
     prediction = model.predict(
-        data,
-        verbose=0
-    )
+    data,
+    batch_size=1,
+    verbose=0
+)
 
     probabilities = prediction[0]
 
