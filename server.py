@@ -3,7 +3,7 @@ import os
 # ต้องตั้งก่อน import tf_keras
 os.environ["TF_USE_LEGACY_KERAS"] = "1"
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 import numpy as np
@@ -327,11 +327,7 @@ def predict():
 # =========================================================
 @app.route("/", methods=["GET"])
 def home():
-
-    return jsonify({
-        "status": "ok",
-        "message": "Song-Jan Food AI Server is running"
-    })
+    return send_from_directory(".", "index.html")
 
 
 # =========================================================
