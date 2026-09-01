@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ส่องจาน — Song-Jan</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#f5f5f2;
+  --surface:#ffffff;
+  --surface2:#efefec;
+  --surface3:#e8e8e4;
+  --text:#18181600;
+  --text:#181816;
+  --text2:#68685f;
+  --text3:#a0a098;
+  --border:#e2e2de;
+  --border2:#d0d0ca;
+  --green:#169966;
+  --green-l:#d8f3e8;
+  --green-t:#0d7a50;
+  --red:#cc3e26;
+  --red-l:#fcecea;
+  --amber:#b8720e;
+  --amber-l:#fdf2df;
+  --blue:#1a66cc;
+  --blue-l:#e8f0fc;
+  --r:10px;
+  --rs:7px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.05);
+}
+
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.65}
+
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+
+/* ════════════════════════════════
+   NAV — single horizontal bar
+════════════════════════════════ */
+nav{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  height:56px;
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  position:sticky;top:0;z-index:200;
+  gap:0;
+}
+.logo{
+  display:flex;align-items:center;gap:7px;
+  text-decoration:none;color:var(--text);
+  font-size:16px;font-weight:700;
+  flex-shrink:0;cursor:pointer;
+  user-select:none;
+  padding-right:16px;
+  border-right:1px solid var(--border);
+  margin-right:12px;
+}
+.logo-mark{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--green);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;
+  flex-shrink:0;
+}
+
+/* nav items */
+.nav-items{display:flex;align-items:center;flex:1;gap:2px}
+.nav-item{
+  height:56px;
+  display:flex;align-items:center;gap:6px;
+  padding:0 13px;
+  font-size:13.5px;font-weight:500;
+  color:var(--text2);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:color .14s,border-color .14s;
+  white-space:nowrap;
+  text-decoration:none;
+  position:relative;
+}
+.nav-item:hover{color:var(--text)}
+.nav-item.active{color:var(--text);border-bottom-color:var(--green)}
+
+/* scan pill — center nav */
+.scan-pill{
+  display:flex;align-items:center;gap:7px;
+  background:var(--green);color:#fff;
+  padding:7px 18px;border-radius:99px;
+  font-size:13.5px;font-weight:600;
+  cursor:pointer;border:none;font-family:inherit;
+  transition:background .14s,transform .1s;
+  margin:0 6px;
+}
+.scan-pill:hover{background:var(--green-t);transform:translateY(-1px)}
+
+/* right side */
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.export-btn-nav{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:var(--rs);
+  border:1.5px solid var(--border);background:var(--surface);
+  color:var(--text2);font-size:12.5px;font-weight:500;
+  cursor:pointer;font-family:inherit;
+  transition:background .12s,color .12s,border-color .12s;
+}
+.export-btn-nav:hover{background:var(--surface2);border-color:var(--border2);color:var(--text)}
+.avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--green-l);color:var(--green-t);
+  font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:2px solid transparent;
+  transition:border-color .14s;
+  flex-shrink:0;
+}
+.avatar:hover{border-color:var(--green)}
+
+/* ════════════════════════════════
+   MOBILE NAV (bottom bar ≤640px)
+════════════════════════════════ */
+.mobile-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  height:60px;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  z-index:200;
+  align-items:center;
+  justify-content:space-around;
+  padding:0 4px;
+}
+.mn-item{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  flex:1;height:100%;justify-content:center;
+  font-size:10px;font-weight:500;color:var(--text3);
+  cursor:pointer;transition:color .14s;border:none;background:none;font-family:inherit;
+  padding:0;
+}
+.mn-item.active{color:var(--green)}
+.mn-item svg,.mn-item .mn-icon{font-size:20px;line-height:1}
+/* scan center btn */
+.mn-scan{
+  width:50px;height:50px;border-radius:50%;
+  background:var(--green);color:#fff;font-size:22px;
+  display:flex;align-items:center;justify-content:center;
+  border:none;cursor:pointer;font-family:inherit;
+  box-shadow:0 3px 12px rgba(22,153,102,.35);
+  margin-bottom:4px;
+  transition:background .14s,transform .1s;
+  flex-shrink:0;
+}
+.mn-scan:hover{background:var(--green-t);transform:scale(1.06)}
+
+@media(max-width:640px){
+  nav{display:none}
+  .mobile-nav{display:flex}
+  main{padding-bottom:72px}
+}
+
+/* ════════════════════════════════
+   MAIN
+════════════════════════════════ */
+main{padding:24px 24px 32px;max-width:1080px;margin:0 auto}
+
+/* pages */
+.page{display:none}
+.page.active{display:block}
+
+/* ════════════════════════════════
+   HOME
+════════════════════════════════ */
+.greeting-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.greeting-name{font-size:21px;font-weight:700}
+.greeting-sub{font-size:13.5px;color:var(--text2);margin-top:1px}
+.date-badge{
+  font-size:12px;color:var(--text2);
+  background:var(--surface);border:1px solid var(--border);
+  padding:6px 14px;border-radius:99px;
+  white-space:nowrap;flex-shrink:0;align-self:flex-start;
+}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;
+  transition:border-color .14s;
+}
+.stat-card:hover{border-color:var(--border2)}
+.stat-label{font-size:10.5px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.stat-val{font-size:26px;font-weight:700;line-height:1.1}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:3px}
+.val-red{color:var(--red)}.val-amber{color:var(--amber)}.val-blue{color:var(--blue)}.val-green{color:var(--green)}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-action{margin-left:auto;font-size:12px;font-weight:500;color:var(--green);cursor:pointer}
+.card-action:hover{color:var(--green-t)}
+
+.meal-item{display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid var(--border)}
+.meal-item:last-child{border-bottom:none}
+.meal-emoji{font-size:20px;width:34px;text-align:center;flex-shrink:0}
+.meal-info{flex:1;min-width:0}
+.meal-name-text{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meal-time-text{font-size:11.5px;color:var(--text3)}
+.meal-cal-text{font-size:12.5px;font-weight:600;color:var(--text2);flex-shrink:0}
+
+.nut-row{margin-bottom:11px}
+.nut-header{display:flex;justify-content:space-between;margin-bottom:5px}
+.nut-name{font-size:13px;font-weight:500}
+.nut-nums{font-size:11.5px;color:var(--text2)}
+.prog{height:5px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+
+.tip-card{
+  background:linear-gradient(135deg,var(--green-l),#f0faf6);
+  border:1px solid #bce8d4;
+  border-radius:var(--r);padding:14px 16px;
+  display:flex;gap:12px;align-items:flex-start;margin-bottom:18px;
+}
+.tip-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.tip-title{font-size:13px;font-weight:600;color:var(--green-t)}
+.tip-body{font-size:12.5px;color:var(--green-t);opacity:.85;margin-top:2px;line-height:1.55}
+
+/* ════════════════════════════════
+   PAGE HEADER
+════════════════════════════════ */
+.page-header{margin-bottom:20px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.page-title{font-size:19px;font-weight:700}
+.page-desc{font-size:13.5px;color:var(--text2);margin-top:2px}
+
+/* ════════════════════════════════
+   SCAN PAGE
+════════════════════════════════ */
+.scan-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+.scan-zone{
+  background:var(--surface);
+  border:2px dashed var(--border);
+  border-radius:var(--r);
+  min-height:280px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  cursor:pointer;
+  transition:border-color .15s,background .15s;
+  position:relative;overflow:hidden;
+  text-align:center;padding:20px;
+}
+.scan-zone:hover,.scan-zone.drag{border-color:var(--green);background:var(--green-l)}
+.scan-ico{font-size:38px;opacity:.2}
+.scan-txt{font-size:14.5px;font-weight:500;color:var(--text2)}
+.scan-sub-txt{font-size:12.5px;color:var(--text3)}
+#file-input{display:none}
+#preview-img{max-width:100%;max-height:240px;border-radius:8px;object-fit:contain;display:none}
+
+.btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.btn{
+  padding:8px 16px;border-radius:var(--rs);
+  border:1.5px solid var(--border);background:var(--surface);
+  color:var(--text);font-size:13px;font-weight:500;
+  cursor:pointer;transition:background .12s,border-color .12s;
+  font-family:inherit;display:inline-flex;align-items:center;gap:5px;
+}
+.btn:hover{background:var(--surface2);border-color:var(--border2)}
+.btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
+.btn-primary:hover{background:#333;border-color:#333}
+.btn-primary:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-green:hover{background:var(--green-t);border-color:var(--green-t)}
+
+/* result */
+.result-panel{display:flex;flex-direction:column;gap:12px}
+.result-food-name{font-size:19px;font-weight:700;border-bottom:1px solid var(--border);padding-bottom:10px}
+.result-sub-lbl{font-size:12px;color:var(--text3);margin-top:2px}
+
+.nut-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.nut-card{background:var(--surface2);border-radius:var(--rs);padding:10px 12px}
+.nut-lbl{font-size:10.5px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.nut-val{font-size:17px;font-weight:700;margin-top:2px}
+.nut-unit{font-size:11px;color:var(--text2);font-weight:400}
+
+.advice-box{border-radius:var(--r);padding:12px 14px;font-size:13px;line-height:1.6}
+.advice-box.good{background:var(--green-l);color:var(--green-t);border:1px solid #b0dfc6}
+.advice-box.warn{background:var(--amber-l);color:var(--amber);border:1px solid #e8ce8a}
+.advice-box.bad{background:var(--red-l);color:var(--red);border:1px solid #f0b8aa}
+
+.alt-sec{border-top:1px solid var(--border);padding-top:12px}
+.alt-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.alt-card{
+  background:var(--green-l);border:1px solid #b0dfc6;
+  border-radius:var(--rs);padding:10px 12px;
+  display:flex;align-items:center;gap:9px;
+  cursor:pointer;transition:border-color .12s;margin-bottom:6px;
+}
+.alt-card:hover{border-color:var(--green)}
+.alt-name{font-size:12.5px;font-weight:500;color:var(--green-t);flex:1}
+.alt-pill{font-size:10.5px;font-weight:600;background:#fff;color:var(--green-t);padding:2px 8px;border-radius:99px}
+
+.skel{background:var(--surface2);border-radius:5px;animation:pulse 1.4s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.loading-wrap{display:flex;flex-direction:column;gap:9px}
+
+.empty-result{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:240px;gap:10px;color:var(--text3);font-size:14px;text-align:center;
+}
+.empty-ico{font-size:40px;opacity:.18}
+
+/* ════════════════════════════════
+   AI ASSISTANT
+════════════════════════════════ */
+.asst-layout{display:grid;grid-template-columns:300px 1fr;gap:16px;height:calc(100vh - 160px);min-height:480px}
+
+/* search panel */
+.search-panel{display:flex;flex-direction:column;gap:10px;min-height:0}
+.search-wrap{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--r);padding:9px 13px;
+  transition:border-color .14s;
+}
+.search-wrap:focus-within{border-color:var(--green)}
+.search-wrap input{
+  flex:1;border:none;outline:none;font-size:13.5px;
+  font-family:inherit;background:transparent;color:var(--text);
+}
+.search-wrap input::placeholder{color:var(--text3)}
+
+.search-hint{font-size:11.5px;color:var(--text3);padding:2px 4px}
+.food-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:5px;min-height:0}
+.food-list-lbl{font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:8px 4px 4px}
+
+.food-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--rs);padding:9px 12px;
+  cursor:pointer;transition:border-color .12s,background .12s;
+}
+.food-card:hover{border-color:var(--green);background:var(--green-l)}
+.fc-name{font-size:13.5px;font-weight:500}
+.fc-cal{font-size:11.5px;color:var(--text3);margin-top:1px}
+
+/* chat */
+.chat-panel{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden;min-height:0;
+}
+.chat-head{
+  padding:13px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.chat-status{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2.2s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.chat-head-title{font-size:13.5px;font-weight:600}
+.chat-head-sub{font-size:11.5px;color:var(--text3)}
+
+.qp-row{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px 4px;flex-shrink:0}
+.qp{
+  font-size:11.5px;font-weight:500;padding:5px 11px;border-radius:99px;
+  border:1px solid var(--border);background:var(--surface);color:var(--text2);
+  cursor:pointer;font-family:inherit;transition:all .12s;
+}
+.qp:hover{background:var(--green-l);border-color:var(--green);color:var(--green-t)}
+
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;min-height:0}
+.bubble-row{display:flex;gap:8px;align-items:flex-end}
+.bubble-row.user{flex-direction:row-reverse}
+.bav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.bav.ai{background:var(--green-l)}
+.bav.usr{background:var(--blue-l)}
+.bubble{max-width:80%;padding:9px 13px;border-radius:13px;font-size:13.5px;line-height:1.6}
+.bubble.ai{background:var(--surface2);border-bottom-left-radius:3px}
+.bubble.user{background:var(--text);color:#fff;border-bottom-right-radius:3px}
+
+.chat-in-row{
+  padding:10px 12px;border-top:1px solid var(--border);
+  display:flex;gap:8px;align-items:flex-end;flex-shrink:0;
+}
+.chat-in{
+  flex:1;border:1.5px solid var(--border);border-radius:var(--rs);
+  padding:9px 12px;font-size:13.5px;font-family:inherit;
+  resize:none;outline:none;line-height:1.5;background:var(--bg);
+  transition:border-color .14s;max-height:100px;
+}
+.chat-in:focus{border-color:var(--green)}
+.send-btn{
+  width:38px;height:38px;border-radius:var(--rs);
+  background:var(--green);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .12s;
+}
+.send-btn:hover{background:var(--green-t)}
+.send-btn:disabled{opacity:.35;cursor:not-allowed}
+.send-btn svg{width:17px;height:17px;fill:#fff}
+
+.typing-dots{display:inline-flex;gap:3px;align-items:center;height:16px}
+.td{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--text3);animation:tdot 1.2s infinite}
+.td:nth-child(2){animation-delay:.2s}
+.td:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* ════════════════════════════════
+   HISTORY
+════════════════════════════════ */
+.history-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:11px}
+.hcard{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);padding:13px;cursor:pointer;
+  transition:border-color .14s,box-shadow .14s;
+}
+.hcard:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.hc-img{width:100%;height:110px;object-fit:cover;border-radius:6px;margin-bottom:10px}
+.hc-name{font-size:14px;font-weight:600;margin-bottom:2px}
+.hc-time{font-size:11.5px;color:var(--text3);margin-bottom:10px}
+.pills{display:flex;gap:5px;flex-wrap:wrap}
+.pill{font-size:11px;font-weight:500;padding:3px 9px;border-radius:99px}
+.p-red{background:var(--red-l);color:var(--red)}
+.p-amber{background:var(--amber-l);color:var(--amber)}
+.p-green{background:var(--green-l);color:var(--green-t)}
+.p-blue{background:var(--blue-l);color:var(--blue)}
+
+/* ════════════════════════════════
+   MODAL
+════════════════════════════════ */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.38);z-index:300;
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(3px);padding:16px;
+}
+.overlay.show{display:flex}
+.modal{
+  background:var(--surface);border-radius:16px;
+  width:560px;max-width:100%;max-height:90vh;
+  overflow-y:auto;display:flex;flex-direction:column;
+  box-shadow:0 8px 40px rgba(0,0,0,.16);
+}
+.modal-head{
+  padding:18px 20px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;background:var(--surface);z-index:1;
+  border-radius:16px 16px 0 0;flex-shrink:0;
+}
+.modal-title{font-size:16px;font-weight:700}
+.modal-close{
+  width:28px;height:28px;border-radius:50%;
+  border:1.5px solid var(--border);background:var(--surface2);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:15px;color:var(--text2);transition:background .12s,color .12s;
+}
+.modal-close:hover{background:var(--red-l);color:var(--red);border-color:var(--red)}
+.modal-body{padding:18px 20px;display:flex;flex-direction:column;gap:16px}
+.modal-foot{
+  padding:14px 20px;border-top:1px solid var(--border);
+  display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;
+}
+
+/* form */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-lbl{font-size:11.5px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.form-input,.form-select{
+  padding:9px 11px;border-radius:var(--rs);
+  border:1.5px solid var(--border);font-size:13.5px;
+  font-family:inherit;outline:none;background:var(--bg);
+  color:var(--text);transition:border-color .14s;
+}
+.form-input:focus,.form-select:focus{border-color:var(--green)}
+.form-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a0a098' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.sec-title{font-size:13px;font-weight:600;color:var(--text)}
+.sec-hint{font-size:12px;color:var(--text3);margin-top:-8px}
+.divider{height:1px;background:var(--border)}
+
+/* BMI card */
+.bmi-card{
+  background:var(--surface2);border-radius:var(--rs);
+  padding:13px 16px;display:flex;align-items:center;gap:18px;
+  display:none;
+}
+.bmi-val{font-size:30px;font-weight:700}
+.bmi-lbl{font-size:13px;font-weight:600}
+.bmi-sub{font-size:11.5px;color:var(--text3)}
+.tdee-txt{font-size:13px;font-weight:500}
+.tdee-sub{font-size:11.5px;color:var(--text3)}
+
+/* condition grid */
+.cond-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.cond-item{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 11px;border-radius:var(--rs);
+  border:1.5px solid var(--border);
+  cursor:pointer;transition:all .12s;user-select:none;
+  background:var(--surface);
+}
+.cond-item:hover{border-color:var(--blue);background:var(--blue-l)}
+.cond-item.sel{border-color:var(--blue);background:var(--blue-l)}
+.cond-box{
+  width:17px;height:17px;border-radius:4px;
+  border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;flex-shrink:0;transition:all .12s;color:transparent;
+}
+.cond-item.sel .cond-box{border-color:var(--blue);background:var(--blue);color:#fff}
+.cond-icon{font-size:15px}
+.cond-txt{font-size:12.5px;font-weight:500;flex:1;line-height:1.3}
+/* other input */
+.other-input{
+  padding:8px 11px;border-radius:var(--rs);
+  border:1.5px solid var(--border);font-size:13px;
+  font-family:inherit;outline:none;background:var(--bg);color:var(--text);
+  transition:border-color .14s;width:100%;
+}
+.other-input:focus{border-color:var(--green)}
+
+/* webcam */
+#webcam-video{width:100%;border-radius:var(--rs);background:#000}
+#webcam-canvas{display:none}
+
+/* ════════════════════════════════
+   MISC / EMPTY
+════════════════════════════════ */
+.empty-state{text-align:center;padding:48px 16px;color:var(--text3)}
+.empty-state-ico{font-size:38px;margin-bottom:12px;opacity:.22}
+.empty-state-txt{font-size:14px}
+
+/* ════════════════════════════════
+   RESPONSIVE
+════════════════════════════════ */
+@media(max-width:960px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .two-col{grid-template-columns:1fr}
+  .scan-layout{grid-template-columns:1fr}
+  .asst-layout{grid-template-columns:1fr;height:auto}
+  .search-panel{max-height:260px}
+  main{padding:16px 16px 24px}
+}
+@media(max-width:640px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+  .cond-grid{grid-template-columns:1fr}
+  .nav-right .export-btn-nav{display:none}
+  main{padding:12px 12px 24px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════
+     DESKTOP NAV
+══════════════════════════════ -->
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-mark">🍽️</div>
+    <span>ส่องจาน</span>
+  </div>
+
+  <div class="nav-items">
+    <a class="nav-item active" id="ni-home" onclick="showPage('home',this)">🏠 หน้าหลัก</a>
+    <a class="nav-item" id="ni-scan" onclick="showPage('scan',this)">📷 สแกนอาหาร</a>
+    <button class="scan-pill" onclick="showPage('scan',document.getElementById('ni-scan'))">📸 ส่องจานตอนนี้</button>
+    <a class="nav-item" id="ni-assistant" onclick="showPage('assistant',this)">🤖 AI ผู้ช่วย</a>
+    <a class="nav-item" id="ni-history" onclick="showPage('history',this)">📋 ประวัติ</a>
+  </div>
+
+  <div class="nav-right">
+    <button class="export-btn-nav" onclick="exportReport()">⬇️ ส่งออกรายงาน</button>
+    <div class="avatar" id="avatar-el" onclick="openProfile()" title="โปรไฟล์">ผ</div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════
+     MOBILE BOTTOM NAV
+══════════════════════════════ -->
+<div class="mobile-nav">
+  <button class="mn-item active" id="mn-home" onclick="showPage('home',null,'mn-home')">
+    <span class="mn-icon">🏠</span>หน้าหลัก
+  </button>
+  <button class="mn-item" id="mn-assistant" onclick="showPage('assistant',null,'mn-assistant')">
+    <span class="mn-icon">🤖</span>AI ผู้ช่วย
+  </button>
+  <button class="mn-scan" onclick="showPage('scan',document.getElementById('ni-scan'))">📸</button>
+  <button class="mn-item" id="mn-history" onclick="showPage('history',null,'mn-history')">
+    <span class="mn-icon">📋</span>ประวัติ
+  </button>
+  <button class="mn-item" onclick="openProfile()">
+    <span class="mn-icon">👤</span>โปรไฟล์
+  </button>
+</div>
+
+<!-- ══════════════════════════════
+     MAIN
+══════════════════════════════ -->
+<main>
+
+<!-- ── HOME ── -->
+<div id="page-home" class="page active">
+  <div class="greeting-row">
+    <div>
+      <div class="greeting-name" id="gname">สวัสดี 👋</div>
+      <div class="greeting-sub">วันนี้กินอาหารดีแค่ไหน?</div>
+    </div>
+    <div class="date-badge" id="clock"></div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">แคลอรี่วันนี้</div>
+      <div class="stat-val val-red" id="d-cal">1,240</div>
+      <div class="stat-sub" id="d-cal-g">เป้าหมาย 2,000 kcal</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">โซเดียม</div>
+      <div class="stat-val val-amber" id="d-sod">820</div>
+      <div class="stat-sub" id="d-sod-g">เป้าหมาย 2,000 mg</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">คาร์โบไฮเดรต</div>
+      <div class="stat-val val-blue" id="d-carb">52</div>
+      <div class="stat-sub" id="d-carb-g">เป้าหมาย 130 g</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">น้ำตาล</div>
+      <div class="stat-val val-green" id="d-sugar">18</div>
+      <div class="stat-sub" id="d-sugar-g">เป้าหมาย 50 g</div>
+    </div>
+  </div>
+
+  <div class="tip-card" id="tip-card">
+    <div class="tip-icon">💡</div>
+    <div>
+      <div class="tip-title" id="tip-title">ตั้งค่าโปรไฟล์สุขภาพ</div>
+      <div class="tip-body" id="tip-body">กดไอคอน 👤 มุมขวาบน เพื่อกรอกข้อมูลสุขภาพและรับคำแนะนำเฉพาะตัว</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">มื้ออาหารวันนี้ <span class="card-action" onclick="showPage('scan',document.getElementById('ni-scan'))">+ เพิ่มมื้อ</span></div>
+      <div class="meal-item"><div class="meal-emoji">🍳</div><div class="meal-info"><div class="meal-name-text">ไข่ดาว + ข้าวสวย</div><div class="meal-time-text">เช้า · 07:30</div></div><div class="meal-cal-text">420 kcal</div></div>
+      <div class="meal-item"><div class="meal-emoji">🍜</div><div class="meal-info"><div class="meal-name-text">ก๋วยเตี๋ยวเรือ</div><div class="meal-time-text">เที่ยง · 12:15</div></div><div class="meal-cal-text">580 kcal</div></div>
+      <div class="meal-item"><div class="meal-emoji">🧃</div><div class="meal-info"><div class="meal-name-text">น้ำส้มคั้น</div><div class="meal-time-text">บ่าย · 15:00</div></div><div class="meal-cal-text">240 kcal</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">สารอาหารสะสม</div>
+      <div class="nut-row"><div class="nut-header"><span class="nut-name">แคลอรี่</span><span class="nut-nums" id="p-cal-l">1,240 / 2,000 kcal</span></div><div class="prog"><div class="prog-fill" id="p-cal" style="width:62%;background:var(--red)"></div></div></div>
+      <div class="nut-row"><div class="nut-header"><span class="nut-name">โซเดียม</span><span class="nut-nums" id="p-sod-l">820 / 2,000 mg</span></div><div class="prog"><div class="prog-fill" id="p-sod" style="width:41%;background:var(--amber)"></div></div></div>
+      <div class="nut-row"><div class="nut-header"><span class="nut-name">คาร์โบไฮเดรต</span><span class="nut-nums" id="p-carb-l">52 / 130 g</span></div><div class="prog"><div class="prog-fill" id="p-carb" style="width:40%;background:var(--blue)"></div></div></div>
+      <div class="nut-row"><div class="nut-header"><span class="nut-name">น้ำตาล</span><span class="nut-nums" id="p-sugar-l">18 / 50 g</span></div><div class="prog"><div class="prog-fill" id="p-sugar" style="width:36%;background:var(--green)"></div></div></div>
+      <div class="nut-row"><div class="nut-header"><span class="nut-name">ไขมัน</span><span class="nut-nums">28 / 65 g</span></div><div class="prog"><div class="prog-fill" style="width:43%;background:#8b5cf6"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCAN ── -->
+<div id="page-scan" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">สแกนอาหาร 📸</div>
+      <div class="page-desc">อัปโหลดรูปอาหาร AI จะวิเคราะห์สารอาหารให้ทันที</div>
+    </div>
+  </div>
+  <div class="scan-layout">
+    <div>
+      <div class="scan-zone" id="scan-zone" onclick="document.getElementById('file-input').click()">
+        <div class="scan-ico" id="s-ico">📸</div>
+        <div class="scan-txt" id="s-txt">คลิกหรือลากรูปอาหารมาวางที่นี่</div>
+        <div class="scan-sub-txt" id="s-sub">รองรับ JPG, PNG, HEIC</div>
+        <img id="preview-img" alt="preview">
+      </div>
+      <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
+      <div class="btn-row">
+        <button class="btn" onclick="openCam()">📷 ถ่ายรูป</button>
+        <button class="btn btn-primary" id="analyze-btn" onclick="analyzeImg()" disabled>✨ วิเคราะห์อาหาร</button>
+      </div>
+    </div>
+    <div class="result-panel" id="result-panel">
+      <div class="empty-result" id="empty-res">
+        <div class="empty-ico">🍽️</div>
+        <div>อัปโหลดรูปอาหารเพื่อเริ่มวิเคราะห์</div>
+      </div>
+      <div id="result-body" style="display:none;display:flex;flex-direction:column;gap:11px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── AI ASSISTANT ── -->
+<div id="page-assistant" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">🤖 AI ผู้ช่วยโภชนาการ</div>
+      <div class="page-desc">ค้นหาอาหารหรือถามคำถามด้านสุขภาพ</div>
+    </div>
+  </div>
+  <div class="asst-layout">
+
+    <!-- left: search -->
+    <div class="search-panel">
+      <div class="search-wrap">
+        <span>🔍</span>
+        <input id="food-search" type="text" placeholder="ค้นหาอาหาร เช่น ข้าวผัด..."
+          onkeydown="handleSearchKey(event)"
+          oninput="filterFoods(this.value)">
+      </div>
+      <div class="search-hint">พิมพ์แล้วกด Enter เพื่อถาม AI</div>
+      <div class="food-list" id="food-list">
+        <div class="food-list-lbl">อาหารยอดนิยม</div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของข้าวผัดกุ้ง 1 จาน')"><div class="fc-name">🍳 ข้าวผัดกุ้ง</div><div class="fc-cal">~450 kcal</div></div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของส้มตำ 1 จาน')"><div class="fc-name">🥗 ส้มตำ</div><div class="fc-cal">~150 kcal</div></div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของก๋วยเตี๋ยวต้มยำ 1 ชาม')"><div class="fc-name">🍜 ก๋วยเตี๋ยวต้มยำ</div><div class="fc-cal">~320 kcal</div></div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของข้าวมันไก่ 1 จาน')"><div class="fc-name">🍚 ข้าวมันไก่</div><div class="fc-cal">~520 kcal</div></div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของต้มยำกุ้ง 1 ชาม')"><div class="fc-name">🍲 ต้มยำกุ้ง</div><div class="fc-cal">~200 kcal</div></div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของแกงเขียวหวาน 1 จาน')"><div class="fc-name">🍛 แกงเขียวหวาน</div><div class="fc-cal">~380 kcal</div></div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของมะม่วงข้าวเหนียว')"><div class="fc-name">🥭 มะม่วงข้าวเหนียว</div><div class="fc-cal">~400 kcal</div></div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของผัดกะเพราหมูสับ ไข่ดาว')"><div class="fc-name">🌿 ผัดกะเพราหมู + ไข่</div><div class="fc-cal">~550 kcal</div></div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของยำวุ้นเส้น')"><div class="fc-name">🥙 ยำวุ้นเส้น</div><div class="fc-cal">~180 kcal</div></div>
+        <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของบะหมี่กึ่งสำเร็จรูป 1 ซอง')"><div class="fc-name">🍥 บะหมี่กึ่งสำเร็จรูป</div><div class="fc-cal">~350 kcal</div></div>
+        <div id="filtered-foods"></div>
+      </div>
+    </div>
+
+    <!-- right: chat -->
+    <div class="chat-panel">
+      <div class="chat-head">
+        <div class="chat-status"></div>
+        <div>
+          <div class="chat-head-title">Song-Jan AI</div>
+          <div class="chat-head-sub">ผู้ช่วยโภชนาการส่วนตัว</div>
+        </div>
+      </div>
+      <div class="qp-row">
+        <button class="qp" onclick="askAI('อาหารสำหรับวัยรุ่นที่กำลังเติบโต?')">🧒 อาหารวัยรุ่น</button>
+        <button class="qp" onclick="askAI('อยากลดน้ำหนัก ควรกินอะไร หลีกเลี่ยงอะไร?')">⚖️ ลดน้ำหนัก</button>
+        <button class="qp" onclick="askAI('อาหารโซเดียมต่ำ มีอะไรบ้าง?')">🧂 โซเดียมต่ำ</button>
+        <button class="qp" onclick="askAI('อาหารที่ผู้ป่วยเบาหวานควรหลีกเลี่ยง?')">🩸 เบาหวาน</button>
+      </div>
+      <div class="chat-msgs" id="chat-msgs">
+        <div class="bubble-row">
+          <div class="bav ai">🤖</div>
+          <div class="bubble ai">สวัสดีครับ! ผมคือ <strong>Song-Jan AI</strong> 🍽️<br>ถามผมได้เลยเรื่องโภชนาการ สารอาหาร หรือคำแนะนำเฉพาะบุคคลสำหรับคุณ</div>
+        </div>
+      </div>
+      <div class="chat-in-row">
+        <textarea class="chat-in" id="chat-in" placeholder="พิมพ์คำถาม..." rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"
+          oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendChat()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── HISTORY ── -->
+<div id="page-history" class="page">
+  <div class="page-header">
+    <div>
+      <div class="page-title">ประวัติมื้ออาหาร 📋</div>
+      <div class="page-desc">รายการทั้งหมดที่สแกนไว้</div>
+    </div>
+    <button class="btn" onclick="exportReport()" style="flex-shrink:0">⬇️ ส่งออก PDF</button>
+  </div>
+  <div class="history-grid" id="history-grid"></div>
+</div>
+
+</main>
+
+<!-- ══════════════════════════════
+     PROFILE MODAL
+══════════════════════════════ -->
+<div class="overlay" id="profile-overlay">
+<div class="modal">
+  <div class="modal-head">
+    <div class="modal-title">👤 โปรไฟล์สุขภาพ</div>
+    <button class="modal-close" onclick="closeProfile()">✕</button>
+  </div>
+  <div class="modal-body">
+
+    <div class="sec-title">ข้อมูลส่วนตัว</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl">ชื่อเล่น</label><input class="form-input" id="p-name" placeholder="เช่น ใบตอง"></div>
+      <div class="form-group"><label class="form-lbl">เพศ</label>
+        <select class="form-select" id="p-gender">
+          <option value="">-- เลือก --</option>
+          <option value="male">ชาย</option>
+          <option value="female">หญิง</option>
+          <option value="other">ไม่ระบุ</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl">อายุ (ปี)</label><input class="form-input" type="number" id="p-age" placeholder="16" min="5" max="100" oninput="calcBMI()"></div>
+      <div class="form-group"><label class="form-lbl">น้ำหนัก (กก.)</label><input class="form-input" type="number" id="p-weight" placeholder="55" oninput="calcBMI()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl">ส่วนสูง (ซม.)</label><input class="form-input" type="number" id="p-height" placeholder="165" oninput="calcBMI()"></div>
+      <div class="form-group"><label class="form-lbl">ระดับกิจกรรม</label>
+        <select class="form-select" id="p-activity" onchange="calcBMI()">
+          <option value="sedentary">น้อยมาก (นั่งทำงาน)</option>
+          <option value="light">เล็กน้อย (1–3 วัน/สัปดาห์)</option>
+          <option value="moderate" selected>ปานกลาง (3–5 วัน/สัปดาห์)</option>
+          <option value="active">มาก (6–7 วัน/สัปดาห์)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- BMI card -->
+    <div class="bmi-card" id="bmi-card">
+      <div>
+        <div class="bmi-val" id="bmi-val">—</div>
+        <div class="bmi-lbl" id="bmi-lbl">BMI</div>
+        <div class="bmi-sub" id="bmi-sub"></div>
+      </div>
+      <div>
+        <div class="tdee-txt" id="tdee-txt"></div>
+        <div class="tdee-sub">ความต้องการแคลอรี่/วัน</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-title">โรคประจำตัว / เป้าหมายสุขภาพ</div>
+    <div class="sec-hint">ระบบจะปรับเป้าหมายสารอาหารให้เหมาะสม</div>
+
+    <div class="cond-grid" id="cond-grid">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- อื่นๆ field -->
+    <div class="form-group">
+      <label class="form-lbl">โรคอื่นๆ / อาการเพิ่มเติม</label>
+      <input class="other-input" type="text" id="p-other" placeholder="เช่น ภูมิแพ้อาหาร, กรดไหลย้อน, แพ้นม...">
+    </div>
+    <div class="form-group">
+      <label class="form-lbl">อาหารที่แพ้ / ต้องหลีกเลี่ยง</label>
+      <input class="other-input" type="text" id="p-allergy" placeholder="เช่น อาหารทะเล, กลูเตน, ถั่วลิสง...">
+    </div>
+
+  </div>
+  <div class="modal-foot">
+    <button class="btn" onclick="closeProfile()">ยกเลิก</button>
+    <button class="btn btn-green" onclick="saveProfile()">💾 บันทึก</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     WEBCAM MODAL
+══════════════════════════════ -->
+<div class="overlay" id="cam-overlay">
+<div class="modal" style="max-width:480px">
+  <div class="modal-head">
+    <div class="modal-title">📷 ถ่ายรูปอาหาร</div>
+    <button class="modal-close" onclick="closeCam()">✕</button>
+  </div>
+  <div class="modal-body">
+    <video id="webcam-video" autoplay playsinline></video>
+    <canvas id="webcam-canvas"></canvas>
+  </div>
+  <div class="modal-foot">
+    <button class="btn" onclick="closeCam()">ยกเลิก</button>
+    <button class="btn btn-primary" onclick="snapCam()">📸 ถ่าย</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════
+     JAVASCRIPT
+══════════════════════════════ -->
+<script>
+'use strict';
+
+/* ── CONDITION DEFINITIONS ── */
+const CONDS = [
+  {key:'hypertension', icon:'🫀', label:'ความดันโลหิตสูง', sodiumF:.72},
+  {key:'diabetes',     icon:'🩸', label:'เสี่ยงเบาหวาน / เบาหวาน', sugarF:.55},
+  {key:'weight',       icon:'⚖️', label:'คุมน้ำหนัก / ลดความอ้วน', calF:.85},
+  {key:'kidney',       icon:'🫘', label:'โรคไต', sodiumF:.6},
+  {key:'cholesterol',  icon:'🧪', label:'ไขมันในเลือดสูง', fatWarn:true},
+  {key:'gout',         icon:'🦵', label:'โรคเกาต์', protWarn:true},
+  {key:'heart',        icon:'❤️', label:'โรคหัวใจ', sodiumF:.75},
+  {key:'gastric',      icon:'🫃', label:'กรดไหลย้อน / กระเพาะ', spiceWarn:true},
+  {key:'anemia',       icon:'💊', label:'โลหิตจาง (ขาดธาตุเหล็ก)', ironNote:true},
+  {key:'osteo',        icon:'🦴', label:'กระดูกพรุน', calcNote:true},
+];
+
+/* build condition checkboxes */
+const condGrid = document.getElementById('cond-grid');
+CONDS.forEach(c => {
+  const el = document.createElement('div');
+  el.className = 'cond-item';
+  el.id = 'ci-'+c.key;
+  el.innerHTML = `<div class="cond-box" id="cb-${c.key}">✓</div><span class="cond-icon">${c.icon}</span><span class="cond-txt">${c.label}</span>`;
+  el.onclick = () => toggleCond(c.key);
+  condGrid.appendChild(el);
+});
+
+/* ── APP STATE ── */
+const APP = {
+  profile: JSON.parse(localStorage.getItem('sj_profile')||'null'),
+  history: JSON.parse(localStorage.getItem('sj_history')||'[]'),
+  goals:   {cal:2000,sodium:2000,carbs:130,sugar:50}
+};
+let selConds = new Set();
+
+/* ── PAGE NAV ── */
+function showPage(id, desktopEl, mobileId){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(l=>l.classList.remove('active'));
+  document.querySelectorAll('.mn-item').forEach(l=>l.classList.remove('active'));
+  const pg = document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  if(desktopEl) desktopEl.classList.add('active');
+  if(mobileId) document.getElementById(mobileId)?.classList.add('active');
+  // sync desktop nav
+  const ni = document.getElementById('ni-'+id);
+  if(ni) ni.classList.add('active');
+}
+
+/* ── CLOCK ── */
+function tick(){
+  const n=new Date();
+  const el=document.getElementById('clock');
+  if(el) el.textContent='📅 '+n.toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'short'})+' · ⏰ '+n.toLocaleTimeString('th-TH');
+}
+tick(); setInterval(tick,1000);
+
+/* ── PROFILE ── */
+function toggleCond(key){
+  const el=document.getElementById('ci-'+key);
+  const cb=document.getElementById('cb-'+key);
+  if(selConds.has(key)){selConds.delete(key);el.classList.remove('sel')}
+  else{selConds.add(key);el.classList.add('sel')}
+}
+function openProfile(){
+  const p=APP.profile;
+  if(p){
+    document.getElementById('p-name').value=p.name||'';
+    document.getElementById('p-gender').value=p.gender||'';
+    document.getElementById('p-age').value=p.age||'';
+    document.getElementById('p-weight').value=p.weight||'';
+    document.getElementById('p-height').value=p.height||'';
+    document.getElementById('p-activity').value=p.activity||'moderate';
+    document.getElementById('p-other').value=p.other||'';
+    document.getElementById('p-allergy').value=p.allergy||'';
+    selConds=new Set(p.conditions||[]);
+    CONDS.forEach(c=>{
+      const el=document.getElementById('ci-'+c.key);
+      const cb=document.getElementById('cb-'+c.key);
+      if(el){selConds.has(c.key)?el.classList.add('sel'):el.classList.remove('sel')}
+    });
+    calcBMI();
+  }
+  document.getElementById('profile-overlay').classList.add('show');
+}
+function closeProfile(){document.getElementById('profile-overlay').classList.remove('show')}
+
+function calcBMI(){
+  const w=parseFloat(document.getElementById('p-weight').value);
+  const hcm=parseFloat(document.getElementById('p-height').value);
+  const age=parseFloat(document.getElementById('p-age').value)||17;
+  const act=document.getElementById('p-activity').value;
+  const gender=document.getElementById('p-gender').value;
+  const card=document.getElementById('bmi-card');
+  if(!w||!hcm){card.style.display='none';return}
+  card.style.display='flex';
+  const h=hcm/100;
+  const bmi=w/(h*h);
+  let lbl=bmi<18.5?'น้ำหนักน้อย':bmi<25?'ปกติ ✓':bmi<30?'น้ำหนักเกิน':'อ้วน';
+  let col=bmi<18.5?'var(--blue)':bmi<25?'var(--green)':bmi<30?'var(--amber)':'var(--red)';
+  document.getElementById('bmi-val').textContent=bmi.toFixed(1);
+  document.getElementById('bmi-val').style.color=col;
+  document.getElementById('bmi-lbl').textContent=lbl;
+  document.getElementById('bmi-sub').textContent=`${w} กก. · ${hcm} ซม.`;
+  const af={sedentary:1.2,light:1.375,moderate:1.55,active:1.725}[act]||1.55;
+  const bmr=10*w+6.25*hcm-5*age+(gender==='male'?5:-161);
+  const tdee=Math.round(bmr*af);
+  document.getElementById('tdee-txt').textContent=`~${tdee.toLocaleString()} kcal/วัน`;
+}
+
+function saveProfile(){
+  const name=(document.getElementById('p-name').value.trim()||'ผู้ใช้');
+  const p={
+    name, gender:document.getElementById('p-gender').value,
+    age:parseFloat(document.getElementById('p-age').value)||17,
+    weight:parseFloat(document.getElementById('p-weight').value),
+    height:parseFloat(document.getElementById('p-height').value),
+    activity:document.getElementById('p-activity').value,
+    conditions:[...selConds],
+    other:document.getElementById('p-other').value.trim(),
+    allergy:document.getElementById('p-allergy').value.trim()
+  };
+  APP.profile=p;
+  localStorage.setItem('sj_profile',JSON.stringify(p));
+
+  // recalc goals
+  APP.goals={cal:2000,sodium:2000,carbs:130,sugar:50};
+  selConds.forEach(k=>{
+    const c=CONDS.find(x=>x.key===k);
+    if(!c)return;
+    if(c.sodiumF) APP.goals.sodium=Math.min(APP.goals.sodium,Math.round(2000*c.sodiumF));
+    if(c.sugarF)  APP.goals.sugar =Math.min(APP.goals.sugar, Math.round(50*c.sugarF));
+    if(c.calF)    APP.goals.cal   =Math.min(APP.goals.cal,   Math.round(2000*c.calF));
+  });
+
+  document.getElementById('avatar-el').textContent=name.charAt(0);
+  document.getElementById('gname').textContent=`สวัสดี, ${name} 👋`;
+  updateTip(p); updateDash();
+  closeProfile();
+
+  // rebuild chat system prompt
+  chatHistory=[];
+}
+
+function updateTip(p){
+  const conds=p.conditions||[];
+  let title='',body='';
+  if(conds.includes('hypertension')||conds.includes('kidney')){
+    title='⚠️ ระวังโซเดียม';
+    body=`เป้าหมายโซเดียมของคุณ ${APP.goals.sodium} mg/วัน หลีกเลี่ยงอาหารหมักดอง ซอสปรุงรส`;
+  } else if(conds.includes('diabetes')){
+    title='🩸 ควบคุมน้ำตาล';
+    body=`เป้าหมายน้ำตาล ${APP.goals.sugar} g/วัน เน้นอาหารดัชนีน้ำตาลต่ำ`;
+  } else if(p.age<18){
+    title=`🌱 คำแนะนำวัยรุ่น (${p.age} ปี)`;
+    body='ร่างกายกำลังเจริญเติบโต ควรได้แคลเซียมจากนมและโปรตีนเพียงพอ';
+  } else {
+    title=`✅ บันทึกโปรไฟล์สำเร็จ — ${p.name}`;
+    body='เป้าหมายสารอาหารถูกปรับตามข้อมูลสุขภาพของคุณแล้ว';
+  }
+  document.getElementById('tip-title').textContent=title;
+  document.getElementById('tip-body').textContent=body;
+}
+
+function updateDash(){
+  const g=APP.goals;
+  document.getElementById('d-cal-g').textContent=`เป้าหมาย ${g.cal.toLocaleString()} kcal`;
+  document.getElementById('d-sod-g').textContent=`เป้าหมาย ${g.sodium.toLocaleString()} mg`;
+  document.getElementById('d-carb-g').textContent=`เป้าหมาย ${g.carbs} g`;
+  document.getElementById('d-sugar-g').textContent=`เป้าหมาย ${g.sugar} g`;
+  // progress bars
+  function pct(v,max){return Math.min(100,Math.round(v/max*100))+'%'}
+  document.getElementById('p-cal').style.width=pct(1240,g.cal);
+  document.getElementById('p-sod').style.width=pct(820,g.sodium);
+  document.getElementById('p-carb').style.width=pct(52,g.carbs);
+  document.getElementById('p-sugar').style.width=pct(18,g.sugar);
+  document.getElementById('p-cal-l').textContent=`1,240 / ${g.cal.toLocaleString()} kcal`;
+  document.getElementById('p-sod-l').textContent=`820 / ${g.sodium.toLocaleString()} mg`;
+  document.getElementById('p-carb-l').textContent=`52 / ${g.carbs} g`;
+  document.getElementById('p-sugar-l').textContent=`18 / ${g.sugar} g`;
+}
+
+// init
+if(APP.profile){
+  const p=APP.profile;
+  selConds=new Set(p.conditions||[]);
+  document.getElementById('avatar-el').textContent=(p.name||'ผ').charAt(0);
+  document.getElementById('gname').textContent=`สวัสดี, ${p.name} 👋`;
+  if(selConds.has('hypertension')||selConds.has('kidney')) APP.goals.sodium=Math.min(APP.goals.sodium,Math.round(2000*.72));
+  if(selConds.has('diabetes')) APP.goals.sugar=Math.round(50*.55);
+  if(selConds.has('weight'))   APP.goals.cal=Math.round(2000*.85);
+  updateTip(p); updateDash();
+}
+
+/* ── FOOD SEARCH (filter only, Enter → askAI) ── */
+const FOODS_DB=[
+  {n:'ข้าวผัดกุ้ง',cal:450},{n:'ข้าวผัดหมู',cal:430},{n:'ข้าวผัดไก่',cal:420},
+  {n:'ส้มตำ',cal:150},{n:'ก๋วยเตี๋ยวต้มยำ',cal:320},{n:'ก๋วยเตี๋ยวเรือ',cal:280},
+  {n:'ข้าวมันไก่',cal:520},{n:'ต้มยำกุ้ง',cal:200},{n:'แกงเขียวหวาน',cal:380},
+  {n:'แกงเผ็ด',cal:350},{n:'ผัดกะเพรา',cal:480},{n:'ผัดซีอิ๊ว',cal:420},
+  {n:'มะม่วงข้าวเหนียว',cal:400},{n:'บะหมี่กึ่งสำเร็จรูป',cal:350},{n:'ยำวุ้นเส้น',cal:180},
+  {n:'ลาบหมู',cal:250},{n:'น้ำพริกปลาทู',cal:180},{n:'ผัดผักรวม',cal:120},
+  {n:'ข้าวหน้าเป็ด',cal:580},{n:'หมูกระทะ',cal:600},{n:'ชาบู',cal:400},
+  {n:'สุกี้',cal:380},{n:'โจ๊ก',cal:180},{n:'ข้าวต้ม',cal:120},
+  {n:'ไข่ดาว',cal:90},{n:'ไข่เจียว',cal:150},{n:'ไข่ต้ม',cal:75},
+  {n:'นมสด',cal:120},{n:'โยเกิร์ต',cal:90},{n:'ผลไม้รวม',cal:100},
+];
+
+function handleSearchKey(e){
+  if(e.key==='Enter'){
+    const q=document.getElementById('food-search').value.trim();
+    if(q) askAI(`ข้อมูลโภชนาการของ "${q}" พร้อมสารอาหารสำคัญ`);
+  }
+}
+function filterFoods(q){
+  const el=document.getElementById('filtered-foods');
+  if(!q){el.innerHTML='';return}
+  const results=FOODS_DB.filter(f=>f.n.includes(q)).slice(0,6);
+  if(!results.length){el.innerHTML='<div style="color:var(--text3);font-size:12.5px;padding:8px 4px">กด Enter เพื่อถาม AI</div>';return}
+  el.innerHTML='<div class="food-list-lbl">ผลการค้นหา</div>'+results.map(f=>`
+    <div class="food-card" onclick="askAI('ข้อมูลโภชนาการของ ${f.n}')">
+      <div class="fc-name">🍽️ ${f.n}</div>
+      <div class="fc-cal">~${f.cal} kcal</div>
+    </div>`).join('');
+}
+
+/* ── FILE / DRAG ── */
+let imgB64=null;
+const scanZone=document.getElementById('scan-zone');
+scanZone.addEventListener('dragover',e=>{e.preventDefault();scanZone.classList.add('drag')});
+scanZone.addEventListener('dragleave',()=>scanZone.classList.remove('drag'));
+scanZone.addEventListener('drop',e=>{e.preventDefault();scanZone.classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))loadFile(f)});
+
+function handleFile(e){const f=e.target.files[0];if(f)loadFile(f)}
+function loadFile(file){
+  const r=new FileReader();
+  r.onload=ev=>{
+    const url=ev.target.result;
+    imgB64=url.split(',')[1];
+    const img=document.getElementById('preview-img');
+    img.src=url;img.style.display='block';
+    document.getElementById('s-ico').style.display='none';
+    document.getElementById('s-txt').style.display='none';
+    document.getElementById('s-sub').style.display='none';
+    document.getElementById('analyze-btn').disabled=false;
+    document.getElementById('empty-res').style.display='none';
+    document.getElementById('result-body').style.display='none';
+  };
+  r.readAsDataURL(file);
+}
+
+/* ── WEBCAM ── */
+let camStream=null;
+async function openCam(){
+  document.getElementById('cam-overlay').classList.add('show');
+  try{
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    document.getElementById('webcam-video').srcObject=camStream;
+  }catch{alert('ไม่สามารถเปิดกล้องได้');closeCam()}
+}
+function closeCam(){
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}
+  document.getElementById('cam-overlay').classList.remove('show');
+}
+function snapCam(){
+  const v=document.getElementById('webcam-video');
+  const c=document.getElementById('webcam-canvas');
+  c.width=v.videoWidth;c.height=v.videoHeight;
+  c.getContext('2d').drawImage(v,0,0);
+  const url=c.toDataURL('image/jpeg',.9);
+  imgB64=url.split(',')[1];
+  const img=document.getElementById('preview-img');
+  img.src=url;img.style.display='block';
+  document.getElementById('s-ico').style.display='none';
+  document.getElementById('s-txt').style.display='none';
+  document.getElementById('s-sub').style.display='none';
+  document.getElementById('analyze-btn').disabled=false;
+  closeCam();
+}
+
+/* ── ANALYZE ── */
+async function analyzeImg(){
+  if(!imgB64) return;
+
+  const btn = document.getElementById('analyze-btn');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ กำลังวิเคราะห์...';
+
+  document.getElementById('empty-res').style.display = 'none';
+
+  const rb = document.getElementById('result-body');
+
+  rb.style.display = 'flex';
+  rb.style.flexDirection = 'column';
+  rb.style.gap = '11px';
+
+  rb.innerHTML = `
+    <div class="loading-wrap">
+      <div class="skel" style="height:26px;width:55%"></div>
+      <div class="skel" style="height:13px;width:35%;margin-bottom:4px"></div>
+
+      <div class="nut-grid">
+        ${[1,2,3,4,5,6].map(() => `
+          <div class="nut-card">
+            <div class="skel" style="height:11px;width:50%;margin-bottom:5px"></div>
+            <div class="skel" style="height:20px;width:65%"></div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="skel" style="height:70px;border-radius:10px;margin-top:4px"></div>
+    </div>
+  `;
+
+  try {
+
+    // แปลง Base64 ที่ได้จากรูปเป็น Blob
+    const response = await fetch(`data:image/jpeg;base64,${imgB64}`);
+    const blob = await response.blob();
+
+    // สร้าง FormData เพื่อส่งรูปให้ Python
+    const formData = new FormData();
+    formData.append('image', blob, 'food.jpg');
+
+    // ส่งรูปเข้า Python
+    const res = await fetch('http://127.0.0.1:5000/predict', {
+      method: 'POST',
+      body: formData
+    });
+
+    // ถ้า Python ตอบ error
+    if(!res.ok){
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(
+        errorData.error || `Server error: ${res.status}`
+      );
+    }
+
+    // รับข้อมูล JSON จาก Python
+    const info = await res.json();
+
+    console.log('ผลจาก Python:', info);
+
+    // เอาผลไปแสดงใน UI เดิม
+    renderResult(info);
+
+    // บันทึกประวัติ
+    saveHistory(
+      info,
+      document.getElementById('preview-img').src
+    );
+
+  } catch(e) {
+
+    console.error(e);
+
+    rb.innerHTML = `
+      <div class="advice-box bad">
+        ⚠️ เกิดข้อผิดพลาด: ${e.message}
+      </div>
+    `;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '✨ วิเคราะห์อาหาร';
+}
+
+function renderResult(info){
+  const lc={good:'good',warn:'warn',bad:'bad'}[info.adviceLevel]||'warn';
+  const li={good:'✅',warn:'⚠️',bad:'🚨'}[info.adviceLevel]||'⚠️';
+  const altHtml=info.alternatives?.length?`<div class="alt-sec">
+    <div class="alt-title">🥗 เมนูทางเลือกที่ดีกว่า</div>
+    ${info.alternatives.map(a=>`<div class="alt-card" onclick="askAI('ข้อมูลโภชนาการของ ${a.name}')">
+      <span style="font-size:18px">🍽️</span>
+      <div class="alt-name"><strong>${a.name}</strong><br><span style="font-size:11.5px;font-weight:400">${a.reason}</span></div>
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <span class="alt-pill">${a.calories} kcal</span>
+        <span class="alt-pill">${a.sodium}mg Na</span>
+      </div>
+    </div>`).join('')}
+  </div>`:'';
+
+  const rb=document.getElementById('result-body');
+  rb.innerHTML=`
+    <div>
+      <div class="result-food-name">${info.foodName}</div>
+      <div class="result-sub-lbl">ขนาดเสิร์ฟ: ${info.portionSize}</div>
+    </div>
+    <div class="nut-grid">
+      <div class="nut-card"><div class="nut-lbl">แคลอรี่</div><div class="nut-val val-red">${info.calories}<span class="nut-unit"> kcal</span></div></div>
+      <div class="nut-card"><div class="nut-lbl">โซเดียม</div><div class="nut-val val-amber">${info.sodium}<span class="nut-unit"> mg</span></div></div>
+      <div class="nut-card"><div class="nut-lbl">คาร์โบไฯ</div><div class="nut-val val-blue">${info.carbs}<span class="nut-unit"> g</span></div></div>
+      <div class="nut-card"><div class="nut-lbl">น้ำตาล</div><div class="nut-val val-green">${info.sugar}<span class="nut-unit"> g</span></div></div>
+      <div class="nut-card"><div class="nut-lbl">ไขมัน</div><div class="nut-val" style="color:#8b5cf6">${info.fat}<span class="nut-unit"> g</span></div></div>
+      <div class="nut-card"><div class="nut-lbl">โปรตีน</div><div class="nut-val" style="color:var(--blue)">${info.protein}<span class="nut-unit"> g</span></div></div>
+    </div>
+    <div class="advice-box ${lc}">${li} <strong>คำแนะนำ:</strong> ${info.advice}</div>
+    ${info.highlights?.length?`<div style="display:flex;flex-direction:column;gap:5px">${info.highlights.map(h=>`<div style="font-size:13px;color:var(--text2);padding-left:11px;border-left:2.5px solid var(--border)">· ${h}</div>`).join('')}</div>`:''}
+    ${altHtml}
+  `;
+}
+
+/* ── HISTORY ── */
+function saveHistory(info,imgSrc){
+  const e={id:Date.now(),foodName:info.foodName,calories:info.calories,sodium:info.sodium,carbs:info.carbs,sugar:info.sugar,fat:info.fat,protein:info.protein,adviceLevel:info.adviceLevel,time:new Date().toLocaleString('th-TH'),imgSrc};
+  APP.history.unshift(e);
+  if(APP.history.length>100)APP.history.pop();
+  localStorage.setItem('sj_history',JSON.stringify(APP.history));
+  renderHistory();
+}
+function renderHistory(){
+  const g=document.getElementById('history-grid');
+  if(!APP.history.length){
+    g.innerHTML='<div class="empty-state"><div class="empty-state-ico">🍽️</div><div class="empty-state-txt">ยังไม่มีประวัติ ลองสแกนอาหารดูก่อน</div></div>';
+    return;
+  }
+  g.innerHTML=APP.history.map(m=>`
+    <div class="hcard">
+      ${m.imgSrc?`<img class="hc-img" src="${m.imgSrc}" alt="${m.foodName}">`:''}
+      <div class="hc-name">${m.foodName}</div>
+      <div class="hc-time">${m.time}</div>
+      <div class="pills">
+        <span class="pill p-red">${m.calories} kcal</span>
+        <span class="pill p-amber">${m.sodium}mg Na</span>
+        <span class="pill p-blue">${m.carbs}g คาร์บ</span>
+        ${m.sugar?`<span class="pill p-green">${m.sugar}g น้ำตาล</span>`:''}
+      </div>
+    </div>`).join('');
+}
+renderHistory();
+
+/* ── AI CHAT ── */
+let chatHistory=[];
+let chatBusy=false;
+
+function buildSys(){
+  const p=APP.profile;
+  if(!p)return'คุณคือ Song-Jan AI ผู้ช่วยโภชนาการ ตอบภาษาไทย กระชับ เป็นมิตร เน้นข้อมูลโภชนาการที่ถูกต้อง';
+  const condNames=CONDS.filter(c=>p.conditions?.includes(c.key)).map(c=>c.label).join(', ');
+  return `คุณคือ Song-Jan AI ผู้ช่วยโภชนาการส่วนตัว ตอบภาษาไทย กระชับ เป็นมิตร
+ข้อมูลผู้ใช้: ${p.name}, อายุ ${p.age} ปี, ${p.gender==='male'?'ชาย':'หญิง'}, ${p.weight}กก., ${p.height}ซม.
+${condNames?'โรค/เป้าหมาย: '+condNames:''}
+${p.allergy?'แพ้: '+p.allergy:''}
+${p.other?'โรคอื่น: '+p.other:''}
+เป้าหมาย/วัน: โซเดียม ${APP.goals.sodium}mg, น้ำตาล ${APP.goals.sugar}g, แคลอรี่ ${APP.goals.cal}kcal
+ให้คำแนะนำที่เหมาะกับโปรไฟล์นี้เสมอ ถ้าถามเรื่องอาหาร ให้บอกแคลอรี่ โซเดียม และความเหมาะสมด้วย`;
+}
+
+async function askAI(msg){
+  // switch to assistant page
+  showPage('assistant',document.getElementById('ni-assistant'),'mn-assistant');
+  if(chatBusy)return;
+  chatBusy=true;
+  document.getElementById('send-btn').disabled=true;
+
+  const msgs=document.getElementById('chat-msgs');
+  msgs.innerHTML+=`<div class="bubble-row user"><div class="bav usr">👤</div><div class="bubble user">${msg.replace(/</g,'&lt;')}</div></div>`;
+  const tid='t'+Date.now();
+  msgs.innerHTML+=`<div class="bubble-row" id="${tid}"><div class="bav ai">🤖</div><div class="bubble ai"><div class="typing-dots"><span class="td"></span><span class="td"></span><span class="td"></span></div></div></div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+
+  chatHistory.push({role:'user',content:msg});
+  if(chatHistory.length>24)chatHistory=chatHistory.slice(-24);
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:1000,
+        system:buildSys(),
+        messages:chatHistory
+      })
+    });
+    const data=await res.json();
+    const reply=data.content.map(c=>c.text||'').join('').trim();
+    chatHistory.push({role:'assistant',content:reply});
+    const te=document.getElementById(tid);
+    if(te)te.querySelector('.bubble').innerHTML=reply.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  }catch(e){
+    const te=document.getElementById(tid);
+    if(te)te.querySelector('.bubble').innerHTML='⚠️ เกิดข้อผิดพลาด ลองใหม่อีกครั้ง';
+  }
+  msgs.scrollTop=msgs.scrollHeight;
+  chatBusy=false;
+  document.getElementById('send-btn').disabled=false;
+}
+
+function sendChat(){
+  const inp=document.getElementById('chat-in');
+  const msg=inp.value.trim();
+  if(!msg||chatBusy)return;
+  inp.value='';inp.style.height='auto';
+  askAI(msg);
+}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px'}
+
+/* ── EXPORT ── */
+function exportReport(){
+  const p=APP.profile;
+  const h=APP.history.slice(0,30);
+  const totCal=h.reduce((s,m)=>s+(m.calories||0),0);
+  const totSod=h.reduce((s,m)=>s+(m.sodium||0),0);
+  const condNames=p?CONDS.filter(c=>p.conditions?.includes(c.key)).map(c=>c.label).join(', '):'—';
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8">
+  <title>รายงานสุขภาพ ส่องจาน</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>body{font-family:Sarabun,sans-serif;padding:40px;color:#181816;max-width:720px;margin:0 auto}
+  h1{font-size:22px;margin-bottom:4px}h2{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#999;margin:24px 0 10px;border-bottom:1px solid #eee;padding-bottom:6px}
+  .sub{color:#666;font-size:13px;margin-bottom:24px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+  .sc{border:1px solid #e2e2de;border-radius:8px;padding:12px;text-align:center}
+  .sv{font-size:22px;font-weight:700}.sl{font-size:11px;color:#999;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:#f5f5f2;padding:8px 10px;text-align:left;border:1px solid #e2e2de}
+  td{padding:8px 10px;border:1px solid #e2e2de}tr:nth-child(even){background:#fafafa}
+  .prow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .pcard{border:1px solid #e2e2de;border-radius:6px;padding:10px 12px}
+  .pk{font-size:11px;color:#999;font-weight:600;text-transform:uppercase}
+  .pv{font-size:14px;font-weight:500;margin-top:3px}
+  @media print{button{display:none}}</style>
+  </head><body>
+  <h1>🍽️ รายงานสุขภาพ — ส่องจาน</h1>
+  <div class="sub">สร้างเมื่อ ${new Date().toLocaleString('th-TH')}${p?` · ${p.name}`:''}</div>
+  ${p?`<h2>โปรไฟล์</h2><div class="prow">
+  <div class="pcard"><div class="pk">ชื่อ</div><div class="pv">${p.name}</div></div>
+  <div class="pcard"><div class="pk">อายุ / เพศ</div><div class="pv">${p.age} ปี / ${p.gender==='male'?'ชาย':'หญิง'}</div></div>
+  <div class="pcard"><div class="pk">น้ำหนัก / ส่วนสูง</div><div class="pv">${p.weight||'—'} กก. / ${p.height||'—'} ซม.</div></div>
+  <div class="pcard"><div class="pk">โรคประจำตัว</div><div class="pv">${condNames||'ไม่ระบุ'}</div></div>
+  ${p.allergy?`<div class="pcard"><div class="pk">อาหารที่แพ้</div><div class="pv">${p.allergy}</div></div>`:''}
+  ${p.other?`<div class="pcard"><div class="pk">โรคอื่นๆ</div><div class="pv">${p.other}</div></div>`:''}
+  </div>`:''}
+  <h2>สรุปภาพรวม (${h.length} มื้อล่าสุด)</h2>
+  <div class="grid4">
+  <div class="sc"><div class="sv" style="color:#cc3e26">${totCal.toLocaleString()}</div><div class="sl">kcal รวม</div></div>
+  <div class="sc"><div class="sv" style="color:#b8720e">${totSod.toLocaleString()}</div><div class="sl">mg โซเดียมรวม</div></div>
+  <div class="sc"><div class="sv" style="color:#1a66cc">${h.length}</div><div class="sl">มื้ออาหาร</div></div>
+  <div class="sc"><div class="sv" style="color:#169966">${h.length?Math.round(totCal/h.length):0}</div><div class="sl">kcal เฉลี่ย/มื้อ</div></div>
+  </div>
+  <h2>ประวัติมื้ออาหาร</h2>
+  <table><tr><th>อาหาร</th><th>kcal</th><th>โซเดียม</th><th>คาร์บ</th><th>น้ำตาล</th><th>เวลา</th></tr>
+  ${h.map(m=>`<tr><td>${m.foodName}</td><td>${m.calories}</td><td>${m.sodium}mg</td><td>${m.carbs}g</td><td>${m.sugar||'—'}g</td><td>${m.time}</td></tr>`).join('')}
+  </table>
+  <br><button onclick="window.print()" style="padding:10px 22px;background:#169966;color:#fff;border:none;border-radius:7px;font-size:14px;cursor:pointer;font-family:Sarabun,sans-serif">🖨️ พิมพ์ / บันทึก PDF</button>
+  </body></html>`);
+  win.document.close();
+}
+ 
+</script>
+</body>
+</html>
+
