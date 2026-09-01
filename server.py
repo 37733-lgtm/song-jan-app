@@ -1,7 +1,15 @@
 import os
 
-# ต้องตั้งก่อน import tf_keras
+# =========================================================
+# ตั้งค่าก่อนโหลด TensorFlow
+# =========================================================
 os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
+# ลดการใช้ทรัพยากรของ TensorFlow
+os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
+os.environ["TF_NUM_INTEROP_THREADS"] = "1"
+
+import gc
 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
@@ -28,8 +36,10 @@ def load_data():
         encoding="utf-8-sig"
     )
 
+    # ตัดช่องว่างหน้า/หลังชื่อคอลัมน์
     df.columns = df.columns.str.strip()
 
+    # รองรับชื่อคอลัมน์จากไฟล์เดิม
     rename_columns = {
         "class_label (ชื่อใน AI)": "class_label",
         "menu_name (ชื่อเมนู)": "menu_name",
@@ -64,10 +74,13 @@ def load_data():
 
     if missing_columns:
         raise ValueError(
-            "ไม่พบคอลัมน์ใน nutrition_data.csv: "
+            "ไม่พบคอลัมน์ต่อไปนี้ใน nutrition_data.csv: "
             + ", ".join(missing_columns)
+            + "\nคอลัมน์ที่มี: "
+            + ", ".join(df.columns.tolist())
         )
 
+    # ทำความสะอาด class label
     df["class_label"] = (
         df["class_label"]
         .astype(str)
@@ -82,6 +95,7 @@ def load_data():
 # =========================================================
 def load_model_and_labels():
 
+    # โหลดโมเดล
     model = keras.models.load_model(
         "keras_model.h5",
         compile=False
@@ -106,7 +120,7 @@ def load_model_and_labels():
             # 0 khao_man_gai
             # 1 pad_thai
             #
-            # หรือ:
+            # และ:
             # khao_man_gai
 
             if " " in line:
@@ -119,64 +133,99 @@ def load_model_and_labels():
     return model, class_names
 
 
-# โหลดครั้งเดียวตอนเปิด server
+# =========================================================
+# โหลดข้อมูลทั้งหมดครั้งเดียว
+# =========================================================
 df = load_data()
 model, class_names = load_model_and_labels()
 
+# ช่วยคืน memory ที่ไม่จำเป็น
+gc.collect()
+
 
 # =========================================================
-# ทำนายรูป
+# ฟังก์ชันทำนายอาหาร
 # =========================================================
 def predict_food(image):
 
-    # ขนาดที่ Teachable Machine ใช้
+    # ขนาดภาพที่โมเดล Teachable Machine ใช้
     size = (224, 224)
 
-    image = ImageOps.fit(
+    # ปรับขนาดภาพ
+    image_resized = ImageOps.fit(
         image,
         size,
         Image.Resampling.LANCZOS
     )
 
-    image_array = np.asarray(image)
+    # แปลงเป็น numpy
+    image_array = np.asarray(
+        image_resized,
+        dtype=np.float32
+    )
 
+    # Normalize แบบ Teachable Machine
     normalized_image_array = (
-        image_array.astype(np.float32) / 127.5
+        image_array / 127.5
     ) - 1.0
 
-    data = np.ndarray(
-        shape=(1, 224, 224, 3),
+    # เตรียม input
+    data = np.empty(
+        (1, 224, 224, 3),
         dtype=np.float32
     )
 
     data[0] = normalized_image_array
 
+    # AI Prediction
     prediction = model.predict(
-    data,
-    batch_size=1,
-    verbose=0
-)
+        data,
+        batch_size=1,
+        verbose=0
+    )
 
+    # Probability ของแต่ละ class
     probabilities = prediction[0]
 
-    index = int(np.argmax(probabilities))
+    # หาคลาสที่มั่นใจที่สุด
+    index = int(
+        np.argmax(probabilities)
+    )
 
+    # ตรวจสอบ labels
     if index >= len(class_names):
         raise ValueError(
             "จำนวน Output ของโมเดลไม่ตรงกับ labels.txt"
         )
 
-    predicted_class = class_names[index].strip()
+    predicted_class = (
+        class_names[index]
+        .strip()
+    )
 
-    confidence_score = (
+    confidence = (
         float(probabilities[index]) * 100
     )
 
-    return predicted_class, confidence_score
+    return (
+        predicted_class,
+        confidence
+    )
 
 
 # =========================================================
-# API
+# หน้าเว็บหลัก
+# =========================================================
+@app.route("/", methods=["GET"])
+def home():
+    return send_from_directory(
+        ".",
+        "index.html"
+    )
+
+
+# =========================================================
+# API: วิเคราะห์อาหาร
 # =========================================================
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -184,7 +233,7 @@ def predict():
     try:
 
         # -------------------------------------------------
-        # เช็กรูป
+        # ตรวจสอบไฟล์
         # -------------------------------------------------
         if "image" not in request.files:
             return jsonify({
@@ -198,7 +247,6 @@ def predict():
                 "error": "ไม่ได้เลือกรูปภาพ"
             }), 400
 
-
         # -------------------------------------------------
         # เปิดรูป
         # -------------------------------------------------
@@ -206,17 +254,15 @@ def predict():
             file.stream
         ).convert("RGB")
 
-
         # -------------------------------------------------
-        # AI ทำนาย
+        # AI วิเคราะห์
         # -------------------------------------------------
         predicted_class, confidence = predict_food(
             image
         )
 
-
         # -------------------------------------------------
-        # ค้นข้อมูลโภชนาการ
+        # ค้นหาโภชนาการจาก CSV
         # -------------------------------------------------
         matched_data = df[
             df["class_label"]
@@ -227,8 +273,9 @@ def predict():
             predicted_class.lower()
         ]
 
-
-        # ถ้า AI เจอเมนูแต่ไม่มีใน CSV
+        # -------------------------------------------------
+        # ถ้าไม่พบข้อมูล
+        # -------------------------------------------------
         if matched_data.empty:
 
             return jsonify({
@@ -241,48 +288,66 @@ def predict():
                 "fat": 0,
                 "protein": 0,
                 "fiber": 0,
-                "confidence": round(confidence, 2),
+                "confidence": round(
+                    confidence,
+                    2
+                ),
                 "adviceLevel": "warn",
-                "advice": "AI ตรวจพบเมนูนี้ แต่ยังไม่มีข้อมูลโภชนาการในฐานข้อมูล",
+                "advice": (
+                    "AI ตรวจพบเมนูนี้ "
+                    "แต่ยังไม่มีข้อมูลโภชนาการในฐานข้อมูล"
+                ),
                 "highlights": [],
                 "alternatives": []
             })
 
-
         row = matched_data.iloc[0]
 
+        # -------------------------------------------------
+        # แปลงค่าตัวเลขให้ปลอดภัย
+        # -------------------------------------------------
+        def num(value):
+            try:
+                return float(value)
+            except (ValueError, TypeError):
+                return 0
 
         # -------------------------------------------------
-        # เตรียมข้อมูลส่งกลับ HTML
+        # สร้างข้อมูลส่งกลับ HTML
         # -------------------------------------------------
         result = {
 
-            "foodName": str(row["menu_name"]),
+            "foodName": str(
+                row["menu_name"]
+            ),
 
             "portionSize": str(
                 row["serving_size"]
             ),
 
-            "calories": float(
+            "calories": num(
                 row["calories"]
             ),
 
+            # CSV ตอนนี้ไม่มี sodium
             "sodium": 0,
 
-            "carbs": float(
+            "carbs": num(
                 row["carbs"]
             ),
 
+            # CSV ตอนนี้ไม่มี sugar
             "sugar": 0,
 
-            "fat": float(
+            "fat": num(
                 row["fat"]
             ),
 
-            "protein": float(
+            "protein": num(
                 row["protein"]
             ),
 
+            # CSV ตอนนี้ไม่มี fiber
             "fiber": 0,
 
             "confidence": round(
@@ -293,8 +358,10 @@ def predict():
             "adviceLevel": "good",
 
             "advice": (
-                f"AI ระบุว่าเป็น {row['menu_name']} "
-                f"ด้วยความมั่นใจ {confidence:.2f}%"
+                f"AI ระบุว่าเป็น "
+                f"{row['menu_name']} "
+                f"ด้วยความมั่นใจ "
+                f"{confidence:.2f}%"
             ),
 
             "highlights": [],
@@ -302,21 +369,29 @@ def predict():
             "alternatives": []
         }
 
-
-        # source ถ้ามี
+        # -------------------------------------------------
+        # Source
+        # -------------------------------------------------
         if "source" in df.columns:
+
             if pd.notna(row["source"]):
+
                 result["source"] = str(
                     row["source"]
                 )
 
-
+        # -------------------------------------------------
+        # คืน JSON
+        # -------------------------------------------------
         return jsonify(result)
-
 
     except Exception as error:
 
-        print("ERROR:", error)
+        # แสดง error ใน Render Logs
+        print("========================================")
+        print("PREDICT ERROR")
+        print(str(error))
+        print("========================================")
 
         return jsonify({
             "error": str(error)
@@ -324,11 +399,17 @@ def predict():
 
 
 # =========================================================
-# ทดสอบ server
+# Health Check
 # =========================================================
-@app.route("/", methods=["GET"])
-def home():
-    return send_from_directory(".", "index.html")
+@app.route("/health", methods=["GET"])
+def health():
+
+    return jsonify({
+        "status": "ok",
+        "model_loaded": model is not None,
+        "menu_count": len(df),
+        "label_count": len(class_names)
+    })
 
 
 # =========================================================
@@ -336,16 +417,29 @@ def home():
 # =========================================================
 if __name__ == "__main__":
 
+    port = int(
+        os.environ.get(
+            "PORT",
+            5000
+        )
+    )
+
     print("========================================")
     print(" Song-Jan Food AI Server")
     print("========================================")
-    print(f"จำนวนเมนู: {len(df)}")
-    print(f"จำนวน AI labels: {len(class_names)}")
-    print("Server: http://127.0.0.1:5000")
+    print(
+        f"จำนวนเมนู: {len(df)}"
+    )
+    print(
+        f"จำนวน AI labels: {len(class_names)}"
+    )
+    print(
+        f"Port: {port}"
+    )
     print("========================================")
 
     app.run(
-        host="127.0.0.1",
-        port=5000,
-        debug=True
+        host="0.0.0.0",
+        port=port,
+        debug=False
     )
